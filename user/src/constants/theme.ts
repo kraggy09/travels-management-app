@@ -1,46 +1,61 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Uber-inspired black & white design system with Sora typeface.
+ * White is the base — black is used for emphasis and active states.
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
+// ─── Colour Tokens ────────────────────────────────────────────────────────────
+// We force a single "always light" palette as requested.
 export const Colors = {
   light: {
+    // Surfaces
+    background: '#FFFFFF',
+    backgroundElement: '#F6F6F6',
+    backgroundSelected: '#000000',
+    // Text
     text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    textSecondary: '#6B6B6B',
+    // Tab bar
+    tabBar: '#FFFFFF',
+    tabBarBorder: '#E8E8E8',
+    tabActive: '#000000',
+    tabInactive: '#9E9E9E',
+    // Accent (kept minimal — Uber style)
+    accent: '#000000',
   },
+  // Dark palette mirrors light so the rest of the codebase compiles without
+  // changes; we always force light mode in the layout.
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    background: '#FFFFFF',
+    backgroundElement: '#F6F6F6',
+    backgroundSelected: '#000000',
+    text: '#000000',
+    textSecondary: '#6B6B6B',
+    tabBar: '#FFFFFF',
+    tabBarBorder: '#E8E8E8',
+    tabActive: '#000000',
+    tabInactive: '#9E9E9E',
+    accent: '#000000',
   },
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
+// ─── Typography ───────────────────────────────────────────────────────────────
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+    sans: 'Sora',
+    serif: 'Georgia',
+    rounded: 'Sora',
+    mono: 'Courier New',
   },
   default: {
-    sans: 'normal',
+    sans: 'Sora',
     serif: 'serif',
-    rounded: 'normal',
+    rounded: 'Sora',
     mono: 'monospace',
   },
   web: {
@@ -51,6 +66,7 @@ export const Fonts = Platform.select({
   },
 });
 
+// ─── Spacing ─────────────────────────────────────────────────────────────────
 export const Spacing = {
   half: 2,
   one: 4,

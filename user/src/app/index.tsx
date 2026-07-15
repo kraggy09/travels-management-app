@@ -1,98 +1,123 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function DashboardScreen() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+
+        {/* Header */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Good morning 👋</Text>
+            <Text style={styles.title}>Dashboard</Text>
+          </View>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>TM</Text>
+          </View>
+        </View>
+
+        {/* KPI Row */}
+        <View style={styles.kpiRow}>
+          <KpiCard label="Active Trips" value="12" />
+          <KpiCard label="Open Leads" value="34" />
+          <KpiCard label="Revenue" value="₹1.2L" dark />
+        </View>
+
+        {/* Section: Recent Activity */}
+        <Text style={styles.sectionTitle}>Recent Activity</Text>
+
+        {ACTIVITY.map((item, i) => (
+          <View key={i} style={styles.activityCard}>
+            <View style={[styles.activityDot, { backgroundColor: item.color }]} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.activityLabel}>{item.label}</Text>
+              <Text style={styles.activitySub}>{item.sub}</Text>
+            </View>
+            <Text style={styles.activityTime}>{item.time}</Text>
+          </View>
+        ))}
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-export default function HomeScreen() {
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function KpiCard({ label, value, dark }: { label: string; value: string; dark?: boolean }) {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <View style={[styles.kpiCard, dark && styles.kpiCardDark]}>
+      <Text style={[styles.kpiValue, dark && styles.kpiValueDark]}>{value}</Text>
+      <Text style={[styles.kpiLabel, dark && styles.kpiLabelDark]}>{label}</Text>
+    </View>
   );
 }
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+
+const ACTIVITY = [
+  { label: 'New lead from Rahul S.', sub: 'Delhi → Manali · 6-seater', time: '2m ago', color: '#000' },
+  { label: 'Trip confirmed', sub: 'Mumbai → Goa · Bus', time: '1h ago', color: '#22C55E' },
+  { label: 'Payment received', sub: '₹18,500 via UPI', time: '3h ago', color: '#3B82F6' },
+  { label: 'Lead cancelled', sub: 'Pune → Shirdi', time: 'Yesterday', color: '#EF4444' },
+];
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  safe: { flex: 1, backgroundColor: '#FFFFFF' },
+  scroll: { paddingHorizontal: 24, paddingBottom: 120 },
+
+  header: {
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    paddingTop: 24,
+    paddingBottom: 28,
   },
-  heroSection: {
-    alignItems: 'center',
+  greeting: { fontSize: 13, color: '#6B6B6B', fontFamily: 'Sora-Regular', marginBottom: 2 },
+  title: { fontSize: 28, fontFamily: 'Sora-Bold', color: '#000000' },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#000000',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: { color: '#FFFFFF', fontFamily: 'Sora-SemiBold', fontSize: 13 },
+
+  kpiRow: { flexDirection: 'row', gap: 12, marginBottom: 32 },
+  kpiCard: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 16,
+    padding: 16,
   },
-  title: {
-    textAlign: 'center',
+  kpiCardDark: { backgroundColor: '#000000' },
+  kpiValue: { fontSize: 22, fontFamily: 'Sora-Bold', color: '#000000', marginBottom: 4 },
+  kpiValueDark: { color: '#FFFFFF' },
+  kpiLabel: { fontSize: 11, fontFamily: 'Sora-Regular', color: '#6B6B6B' },
+  kpiLabelDark: { color: '#9E9E9E' },
+
+  sectionTitle: {
+    fontSize: 17,
+    fontFamily: 'Sora-SemiBold',
+    color: '#000000',
+    marginBottom: 16,
   },
-  code: {
-    textTransform: 'uppercase',
+
+  activityCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  activityDot: { width: 10, height: 10, borderRadius: 5 },
+  activityLabel: { fontSize: 14, fontFamily: 'Sora-Medium', color: '#000000', marginBottom: 2 },
+  activitySub: { fontSize: 12, fontFamily: 'Sora-Regular', color: '#6B6B6B' },
+  activityTime: { fontSize: 11, fontFamily: 'Sora-Regular', color: '#9E9E9E' },
 });

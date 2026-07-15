@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    /* Language & Environment */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "Node16",
+    "moduleResolution": "node16",
+
+    /* Output */
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    /* Type Checking */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Modules */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+
+    /* Source Maps (helpful for debugging) */
+    "sourceMap": true,
+    "declaration": true,
+
+    /* Skip type checking of node_modules */
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
