@@ -1,7 +1,8 @@
 /**
  * Web bottom tab bar — Uber-inspired black & white design.
- * Renders a fixed bottom bar with 4 tabs.
+ * Uses Feather icons from @expo/vector-icons for a clean, modern look.
  */
+import { Feather } from '@expo/vector-icons';
 import {
   Tabs,
   TabList,
@@ -10,18 +11,21 @@ import {
   type TabTriggerSlotProps,
   type TabListProps,
 } from 'expo-router/ui';
+import type { Href } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Spacing, MaxContentWidth } from '@/constants/theme';
 
 // ─── Tab Config ───────────────────────────────────────────────────────────────
 
-const TABS = [
-  { name: 'home', href: '/', label: 'Dashboard', emoji: '▦' },
-  { name: 'leads', href: '/leads', label: 'Leads', emoji: '👥' },
-  { name: 'trips', href: '/trips', label: 'Trips', emoji: '✈' },
-  { name: 'cash-flow', href: '/cash-flow', label: 'Cash Flow', emoji: '₹' },
-] as const;
+type FeatherIconName = React.ComponentProps<typeof Feather>['name'];
+
+const TABS: { name: string; href: Href; label: string; icon: FeatherIconName }[] = [
+  { name: 'home',      href: '/'          as Href, label: 'Dashboard', icon: 'grid'        },
+  { name: 'leads',     href: '/leads'     as Href, label: 'Leads',     icon: 'users'       },
+  { name: 'trips',     href: '/trips'     as Href, label: 'Trips',     icon: 'navigation'  },
+  { name: 'cash-flow', href: '/cash-flow' as Href, label: 'Cash Flow', icon: 'bar-chart-2' },
+];
 
 // ─── App Tabs ─────────────────────────────────────────────────────────────────
 
@@ -33,7 +37,7 @@ export default function AppTabs() {
         <BottomBar>
           {TABS.map((tab) => (
             <TabTrigger key={tab.name} name={tab.name} href={tab.href} asChild>
-              <TabButton label={tab.label} emoji={tab.emoji} />
+              <TabButton label={tab.label} icon={tab.icon} />
             </TabTrigger>
           ))}
         </BottomBar>
@@ -44,17 +48,24 @@ export default function AppTabs() {
 
 // ─── Tab Button ───────────────────────────────────────────────────────────────
 
-type TabButtonProps = TabTriggerSlotProps & { label: string; emoji: string };
+type TabButtonProps = TabTriggerSlotProps & {
+  label: string;
+  icon: FeatherIconName;
+};
 
-function TabButton({ children: _children, isFocused, label, emoji, ...props }: TabButtonProps) {
+function TabButton({ children: _children, isFocused, label, icon, ...props }: TabButtonProps) {
+  const color = isFocused ? '#000000' : '#9E9E9E';
+
   return (
     <Pressable
       {...props}
       style={({ pressed }) => [styles.tabButton, pressed && styles.tabButtonPressed]}>
-      <View style={[styles.tabButtonInner, isFocused && styles.tabButtonActive]}>
-        <Text style={[styles.tabEmoji, isFocused && styles.tabEmojiActive]}>{emoji}</Text>
-        <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>{label}</Text>
-      </View>
+      {/* Active indicator dot */}
+      <View style={[styles.dot, isFocused && styles.dotActive]} />
+      <Feather name={icon} size={22} color={color} />
+      <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -82,7 +93,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E8E8E8',
     paddingBottom: Spacing.three,
-    paddingTop: Spacing.two,
+    paddingTop: Spacing.one,
   },
   bar: {
     flexDirection: 'row',
@@ -92,28 +103,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
 
-  tabButton: { flex: 1, alignItems: 'center' },
-  tabButtonPressed: { opacity: 0.7 },
-
-  tabButtonInner: {
+  tabButton: {
+    flex: 1,
     alignItems: 'center',
-    paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.one,
-    borderRadius: 12,
     gap: 4,
   },
-  tabButtonActive: {
-    // Subtle underline dot to indicate active state
-  },
+  tabButtonPressed: { opacity: 0.7 },
 
-  tabEmoji: {
-    fontSize: 20,
-    color: '#9E9E9E',
+  // Small active indicator dot above the icon
+  dot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'transparent',
+    marginBottom: 2,
   },
-  tabEmojiActive: { color: '#000000' },
+  dotActive: {
+    backgroundColor: '#000000',
+  },
 
   tabLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Sora-Medium',
     color: '#9E9E9E',
   },
